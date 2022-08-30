@@ -13,6 +13,7 @@ return array(
     'InfraEnviroment\\' => array($baseDir . '/infra.env'),
     'InfraDataBase\\' => array($baseDir . '/infra.database'),
     'GrahamCampbell\\ResultType\\' => array($vendorDir . '/graham-campbell/result-type/src'),
+    'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
     'Dotenv\\' => array($vendorDir . '/vlucas/phpdotenv/src'),
     'App\\' => array($baseDir . '/src'),
 );

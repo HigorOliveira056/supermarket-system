@@ -9,7 +9,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "vlucas/phpdotenv": "5.4.x-dev"
+        "vlucas/phpdotenv": "5.4.x-dev",
+        "nikic/fast-route": "2.0.x-dev"
     },
     "autoload": {
         "psr-4": {

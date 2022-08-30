@@ -1,12 +1,12 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => '1.0.0+no-version-set',
-    'version' => '1.0.0.0',
+    'pretty_version' => 'dev-master',
+    'version' => 'dev-master',
     'aliases' => 
     array (
     ),
-    'reference' => NULL,
+    'reference' => '1a61b6a3b1fd7fbbf70e37200a60733832dc36b0',
     'name' => 'test/softexpert',
   ),
   'versions' => 
@@ -19,6 +19,16 @@
       array (
       ),
       'reference' => 'a878d45c1914464426dc94da61c9e1d36ae262a8',
+    ),
+    'nikic/fast-route' => 
+    array (
+      'pretty_version' => 'dev-master',
+      'version' => 'dev-master',
+      'aliases' => 
+      array (
+        0 => '2.0.x-dev',
+      ),
+      'reference' => 'ea5d3abe8b9fc7d63bb42b0384cb1db60972ff68',
     ),
     'phpoption/phpoption' => 
     array (
@@ -62,12 +72,12 @@
     ),
     'test/softexpert' => 
     array (
-      'pretty_version' => '1.0.0+no-version-set',
-      'version' => '1.0.0.0',
+      'pretty_version' => 'dev-master',
+      'version' => 'dev-master',
       'aliases' => 
       array (
       ),
-      'reference' => NULL,
+      'reference' => '1a61b6a3b1fd7fbbf70e37200a60733832dc36b0',
     ),
     'vlucas/phpdotenv' => 
     array (
