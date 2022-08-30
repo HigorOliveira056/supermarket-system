@@ -56,11 +56,15 @@ class Table {
         
         $query .= ")";
 
+        $conn->beginTransaction();
         $conn->query($query);
+        $conn->commit();
     }
 
     public function down () : void {
         $conn = $this->conn->getConnection();
+        $conn->beginTransaction();
         $conn->query("DROP TABLE {$this->tableName}");
+        $conn->commit();
     }
 }
