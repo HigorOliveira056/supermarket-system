@@ -7,10 +7,12 @@ class Table {
     private $columns = [];
     private $pks = [];
     private $fks = [];
+    private $timestamps = true;
 
-    public function __construct (string $tableName, Connection $conn) {
+    public function __construct (string $tableName, Connection $conn, bool $timestamps = true) {
         $this->tableName = $tableName;
         $this->conn = $conn;
+        $this->timestamps = $timestamps;
     }
 
     public function setColumn (string $nameColumn, string $typeColum) : void {
@@ -29,6 +31,11 @@ class Table {
 
     public function up () : void {
         $conn = $this->conn->getConnection();
+
+        if ($this->timestamps) {
+            $this->setColumn('created_at', 'datetime');  
+            $this->setColumn('updated_at', 'datetime');
+        }
 
         $query = "SET QUOTED_IDENTIFIER ON; ";
 

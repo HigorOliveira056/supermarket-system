@@ -12,11 +12,11 @@ $conn = new Connection;
 $tableProduct = new Table('product', $conn);
 $tableProduct->down();
 
+$tableTaxesTypeProduct = new Table('category_product_taxes', $conn);
+$tableTaxesTypeProduct->down();
+
 $tableCategories = new Table('category_product', $conn);
 $tableCategories->down();
 
 $tableTaxes = new Table('taxes', $conn);
-$tableTaxes->down();
-
-$tableTaxesTypeProduct = new Table('category_product_taxes', $conn);
 $tableTaxes->down();
