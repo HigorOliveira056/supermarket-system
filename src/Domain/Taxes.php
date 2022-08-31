@@ -6,7 +6,7 @@ use App\Services\Json;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class Taxes extends Model {
+class Taxes extends Entity {
     protected int $id;
     protected string $name;
     protected float $percentual;

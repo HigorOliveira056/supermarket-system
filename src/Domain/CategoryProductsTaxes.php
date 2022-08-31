@@ -5,7 +5,7 @@ use App\Services\RequestFactory as Request;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CategoryProductsTaxes extends Model {
+class CategoryProductsTaxes extends Entity {
     protected int $category_id;
     protected int $taxe_id;
 

@@ -4,7 +4,7 @@ namespace App\Domain;
 use App\Services\Json;
 use App\Services\RequestFactory as Request;
 
-abstract class Model {
+abstract class Entity {
     protected $created_at;
     protected $updated_at;
 

@@ -6,7 +6,7 @@ use App\Services\Json;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class Product extends Model{
+class Product extends Entity {
     protected int $id;
     protected int $category_id;
     protected string $name;
