@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Domain\Product;
 use App\Repository\ProductRepository;
+use App\Repository\CategoryProductsRepository;
 use App\Services\RequestFactory as Request;
 use App\Services\Json;
 
@@ -16,7 +17,22 @@ class ProductController {
         if (is_null($product))
             return new Json(['message' => 'Nenhum produto encontrado','error' => true]);
 
-        return $product->toJson();
+        $repositoryCategory = new CategoryProductsRepository;
+        $category = $repositoryCategory->get($product->category_id);
+
+        $taxesCollection = $repositoryCategory->oneToMany($category);
+        $taxes = [];
+        foreach ($taxesCollection->toArray() as $item) {
+            $taxes[] = (string) $item->toJson();
+        }
+
+        $response = [
+            'product' => (string) $product->toJson(),
+            'category' => (string) $category->toJson(),
+            'taxes' => $taxes
+        ];
+
+        return new Json($response);
     }
 
     static public function showAll () : Json {
