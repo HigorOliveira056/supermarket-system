@@ -10,7 +10,7 @@ use \PDO;
 
 class TaxesRepository implements ITaxesRepository {
     private Connection $conn;
-    private $table = "taxes";
+    private string $table = "taxes";
 
     public function __construct () {
         $this->connection = new Connection;
@@ -40,11 +40,12 @@ class TaxesRepository implements ITaxesRepository {
 
     public function save(Taxes $taxe) : bool {
         $conn = $this->connection->getConnection();
-        $query = "INSERT INTO {$this->table} (name, created_at) VALUES
-                    (:name, GETDATE())";
+        $query = "INSERT INTO {$this->table} (name, percentual, created_at) VALUES
+                    (:name, :percentual, GETDATE())";
         $statement = $conn->prepare($query);
         $statement->execute([
             'name' => $taxe->name,
+            'percentual' => $taxe->percentual,
         ]);
         return $statement->errorCode() !== '';
     }
@@ -53,6 +54,7 @@ class TaxesRepository implements ITaxesRepository {
         $conn = $this->connection->getConnection();
         $query = "UPDATE {$this->table} SET 
                     name = :name,
+                    percentual = :percentual,
                     updated_at = GETDATE()
                     WHERE
                         id = :id";
@@ -60,6 +62,7 @@ class TaxesRepository implements ITaxesRepository {
         $statement->execute([
             'id' => $taxe->id,
             'name' => $taxe->name,
+            'percentual' => $taxe->percentual,
         ]);
         return $statement->errorCode() !== '';
     }

@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Taxes extends Model {
     protected int $id;
     protected string $name;
+    protected float $percentual;
 
     public function rules (Request $request) : array {
         $errors = [];
@@ -17,6 +18,11 @@ class Taxes extends Model {
                 new Assert\NotBlank,
                 new Assert\NotNull,
                 new Assert\Length(['min' => 2, 'max' => 255]),
+            ],
+            'percentual' => [
+                new Assert\NotBlank,
+                new Assert\NotNull,
+                new Assert\Positive,
             ],
         ];
         $validator = Validation::createValidator();
@@ -35,6 +41,7 @@ class Taxes extends Model {
         return new Json([
             'id' => $this->id,
             'name' => $this->name,
+            'percentual' => $this->percentual,
         ]);
     }
 }

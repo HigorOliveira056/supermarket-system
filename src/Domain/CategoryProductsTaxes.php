@@ -1,17 +1,22 @@
 <?php
 namespace App\Domain;
 
+use App\Services\RequestFactory as Request;
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Constraints as Assert;
+
 class CategoryProductsTaxes extends Model {
     protected int $category_id;
     protected int $taxe_id;
-    protected int $percentual;
 
     public function rules (Request $request) : array {
         $errors = [];
         $rules = [
-            'percentual' => [
+            'taxe_id' => [
+                new Assert\NotBlank,
+                new Assert\NotNull,
                 new Assert\Positive,
-            ]
+            ],
         ];
         $validator = Validation::createValidator();
         foreach ($rules as $key => $item) {

@@ -10,7 +10,7 @@ use \PDO;
 
 class ProductRepository implements IProductRepository{
     private Connection $conn;
-    private $table = "product";
+    private string $table = "product";
 
     public function __construct () {
         $this->connection = new Connection;

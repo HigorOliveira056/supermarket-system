@@ -11,8 +11,9 @@ use \PDO;
 
 class CategoryProductsRepository implements ICategoryProductsRepository {
     private Connection $conn;
-    private $table = "category_product";
-    private $tableRelationTaxe = "category_product_taxes";
+    private string $table = "category_product";
+    private string $tableRelationTaxe = "category_product_taxes";
+    private int $lastIdInsert;
 
     public function __construct () {
         $this->connection = new Connection;
@@ -49,6 +50,7 @@ class CategoryProductsRepository implements ICategoryProductsRepository {
             'name' => $category->name,
             'description' => $category->description,
         ]);
+        $this->lastIdInsert = $conn->lastInsertId();
         return $statement->errorCode() !== '';
     }
 
@@ -78,14 +80,13 @@ class CategoryProductsRepository implements ICategoryProductsRepository {
 
     public function saveTaxe(CategoryProductsTaxes $category_taxes) : bool {
         $conn = $this->connection->getConnection();
-        $query = "INSERT INTO {$this->tableRelationTaxe} (category_product_id, taxe_id, percentual) 
-                    VALUES (:category_product_id, :taxe_id, :percentual)";
+        $query = "INSERT INTO {$this->tableRelationTaxe} (category_product_id, taxe_id) 
+                    VALUES (:category_product_id, :taxe_id)";
         
         $statement = $conn->prepare($query);
         $statement->execute([
-            'category_product_id' => $category_taxes->category_id,
+            'category_product_id' => $this->lastIdInsert,
             'taxe_id' => $category_taxes->taxe_id,
-            'percentual' => $category_taxes->percentual,
         ]);
         return $statement->errorCode() !== '';
     }

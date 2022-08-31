@@ -9,14 +9,19 @@ use InfraDataBase\Table;
 
 $conn = new Connection;
 
-$tableProduct = new Table('product', $conn);
-$tableProduct->down();
+try {
+    $tableProduct = new Table('product', $conn);
+    $tableProduct->down();
+    
+    $tableTaxesTypeProduct = new Table('category_product_taxes', $conn);
+    $tableTaxesTypeProduct->down();
+    
+    $tableCategories = new Table('category_product', $conn);
+    $tableCategories->down();
+    
+    $tableTaxes = new Table('taxes', $conn);
+    $tableTaxes->down();
+}catch(\Exception $e) {
+    echo "Error: " . $e->getMessage() . PHP_EOL;
+}
 
-$tableTaxesTypeProduct = new Table('category_product_taxes', $conn);
-$tableTaxesTypeProduct->down();
-
-$tableCategories = new Table('category_product', $conn);
-$tableCategories->down();
-
-$tableTaxes = new Table('taxes', $conn);
-$tableTaxes->down();

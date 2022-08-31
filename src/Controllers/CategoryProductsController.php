@@ -35,21 +35,30 @@ class CategoryProductsController {
         }
 
         $category->name = $request->get('name');
-        $category->description = $request->get('description');
+        $category->description = $request->get('description', '');
 
         $repository = new CategoryProductsRepository;
         $save = $repository->save($category);
 
         if (!$save) return new Json(['error' => true, 'message' => 'Não foi possível salvar a categoria']);
 
-        $category_taxes = new CategoryProductsRepository;
+        $category_taxes = new CategoryProductsTaxes;
         $errors = $category_taxes->rules($request);
+
         if (count($errors) > 0) {
             return new Json($errors);
         }
 
-        
-        
+        $category_taxes->taxe_id = $request->get('taxe_id');
+
+        try {
+            $save_taxe = $repository->saveTaxe($category_taxes);
+        }catch (\Exception $e) {
+            return new Json(['error' => true, 'message' => $e->getMessage()]);
+        }
+
+        if (!$save_taxe) return new Json(['error' => true, 'message' => 'Não foi possível salvar a categoria']);
+
         return new Json(['error' => false, 'message' => 'Categoria salva com suceso']);
     }
 

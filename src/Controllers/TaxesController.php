@@ -34,6 +34,7 @@ class TaxesController {
         }
 
         $taxes->name = $request->get('name');
+        $taxes->percentual = $request->get('percentual');
 
         $repository = new TaxesRepository;
         $save = $repository->save($taxes);
@@ -54,6 +55,7 @@ class TaxesController {
 
         $taxes->id = $params['id'];
         $taxes->name = $request->get('name');
+        $taxes->percentual = $request->get('percentual');
 
         $repository = new TaxesRepository;
         $update = $repository->update($taxes);

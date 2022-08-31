@@ -64,14 +64,22 @@ class Table {
         $query .= ")";
 
         $conn->beginTransaction();
-        $conn->query($query);
-        $conn->commit();
+        try {
+            $conn->query($query);
+            $conn->commit();
+        }catch(\PDOException $e) {
+            $conn->rollback();
+        }
     }
 
     public function down () : void {
         $conn = $this->conn->getConnection();
         $conn->beginTransaction();
-        $conn->query("DROP TABLE {$this->tableName}");
-        $conn->commit();
+        try {
+            $conn->query("DROP TABLE {$this->tableName}");
+            $conn->commit();
+        }catch(\PDOException $e) {
+            $conn->rollback();
+        }
     }
 }
