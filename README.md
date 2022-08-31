@@ -1,6 +1,19 @@
-## Requirements
+### Requirents Technic
+- Applicação foi feita utilizando-se PHP: ^7.4
+- Banco de dados sql server
+- Necessários os drives para a conexeção com o sql server
 
-- [] - Cadastro dos produtos
+## RUN THE PROJECT - API
+- Configure .env com a configuração para se conectar no banco de dados
+- Rode os comandos:
+  - ```console
+       composer install
+       composer up-tables
+       ```
+
+## Requirements Implementations
+
+- [x] - Cadastro dos produtos
 - [] - Cadastro dos tipos de cada produto
 - [] - Cadastro dos valores percentuais de impostos dos tipos de produtos
 - [] - A tela de venda, onde serão informados os produtos e quantidade adquirias
