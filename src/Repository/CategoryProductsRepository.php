@@ -3,6 +3,7 @@ namespace App\Repository;
 
 use App\Repository\Contracts\ICategoryProductsRepository;
 use App\Domain\CategoryProducts;
+use App\Domain\Taxes;
 use App\Domain\CategoryProductsTaxes;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -72,8 +73,16 @@ class CategoryProductsRepository implements ICategoryProductsRepository {
     }
 
     public function delete(CategoryProducts $category) : bool {
+        $this->deleteOneToMany($category);
         $conn = $this->connection->getConnection();
         $query = "DELETE FROM {$this->table} WHERE id = $category->id";
+        $conn->query($query);
+        return $conn->errorCode() !== '';
+    }
+
+    public function deleteOneToMany (CategoryProducts $category) : bool {
+        $conn = $this->connection->getConnection();
+        $query = "DELETE FROM {$this->tableRelationTaxe} WHERE category_product_id = $category->id";
         $conn->query($query);
         return $conn->errorCode() !== '';
     }
@@ -85,9 +94,23 @@ class CategoryProductsRepository implements ICategoryProductsRepository {
         
         $statement = $conn->prepare($query);
         $statement->execute([
-            'category_product_id' => $this->lastIdInsert,
+            'category_product_id' => $category_taxes->category_id,
             'taxe_id' => $category_taxes->taxe_id,
         ]);
         return $statement->errorCode() !== '';
+    }
+
+    public function oneToMany (CategoryProducts $category) : Collection {
+        $conn = $this->connection->getConnection();
+        $query = "SELECT t.* FROM taxes t
+                    INNER JOIN {$this->tableRelationTaxe} r ON r.taxe_id = t.id
+                    WHERE r.category_product_id = {$category->id}";
+        $statement = $conn->query($query);
+        $taxe = $statement->fetchAll(PDO::FETCH_CLASS, Taxes::class);  
+        return $statement->rowCount() < 1 ? new ArrayCollection([]) : new ArrayCollection($taxe);
+    }
+
+    public function getInsertedId () : ?int {
+        return $this->lastIdInsert;
     }
 }

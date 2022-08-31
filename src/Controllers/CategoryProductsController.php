@@ -17,7 +17,16 @@ class CategoryProductsController {
         if (is_null($category))
             return new Json(['message' => 'Nenhuma categoria encontrada','error' => true]);
 
-        return $category->toJson();
+        $taxesCollection = $repository->oneToMany($category);
+        $taxes = [];
+        foreach ($taxesCollection->toArray() as $item) {
+            $taxes[] = (string) $item->toJson();
+        }
+        $response = [
+            'entity' => (string) $category->toJson(),
+            'taxe' => $taxes,
+        ];
+        return new Json($response);
     }
 
     static public function showAll () : Json {
@@ -34,6 +43,10 @@ class CategoryProductsController {
             return new Json($errors);
         }
 
+        $taxes = explode(';', $request->get('taxes_id', ''));
+        
+        if (count($taxes) < 1 || empty($taxes[0])) return new Json(['error' => true, 'message' => 'Ao menos uma taxa deverá ser informada']);
+
         $category->name = $request->get('name');
         $category->description = $request->get('description', '');
 
@@ -42,24 +55,26 @@ class CategoryProductsController {
 
         if (!$save) return new Json(['error' => true, 'message' => 'Não foi possível salvar a categoria']);
 
-        $category_taxes = new CategoryProductsTaxes;
-        $errors = $category_taxes->rules($request);
-
-        if (count($errors) > 0) {
-            return new Json($errors);
+        $category_id = $repository->getInsertedId();
+        
+        foreach ($taxes as $tax) {
+            $category_taxes = new CategoryProductsTaxes;
+            $category_taxes->category_id = $category_id;
+            $category_taxes->taxe_id = $tax;
+            self::saveTaxe($category_taxes);
         }
+    
+        return new Json(['error' => false, 'message' => 'Categoria salva com suceso']);
+    }
 
-        $category_taxes->taxe_id = $request->get('taxe_id');
-
+    static protected function saveTaxe (CategoryProductsTaxes $category_taxes) : bool {
+        $repository = new CategoryProductsRepository;
         try {
             $save_taxe = $repository->saveTaxe($category_taxes);
         }catch (\Exception $e) {
-            return new Json(['error' => true, 'message' => $e->getMessage()]);
+            return false;
         }
-
-        if (!$save_taxe) return new Json(['error' => true, 'message' => 'Não foi possível salvar a categoria']);
-
-        return new Json(['error' => false, 'message' => 'Categoria salva com suceso']);
+        return true;
     }
 
     static public function update (array $params) : Json {
@@ -70,6 +85,9 @@ class CategoryProductsController {
         if (count($errors) > 0) {
             return new Json($errors);
         }
+        $taxes = explode(';', $request->get('taxes_id', ''));
+        
+        if (count($taxes) < 1 || empty($taxes[0])) return new Json(['error' => true, 'message' => 'Ao menos uma taxa deverá ser informada']);
 
         $category->id = $params['id'];
         $category->name = $request->get('name');
@@ -77,10 +95,18 @@ class CategoryProductsController {
 
         $repository = new CategoryProductsRepository;
         $update = $repository->update($category);
+        
+        if (!$update) return new Json(['error' => true, 'message' => 'Não foi possível atualizar a categoria']);
 
-        if ($update) return new Json(['error' => false, 'message' => 'Categoria atualizada com suceso']);
+        $repository->deleteOneToMany($category);
 
-        return new Json(['error' => true, 'message' => 'Não foi possível atualizar a categoria']);
+        foreach ($taxes as $tax) {
+            $category_taxes = new CategoryProductsTaxes;
+            $category_taxes->category_id = $category->id;
+            $category_taxes->taxe_id = $tax;
+            self::saveTaxe($category_taxes);
+        }
+        return new Json(['error' => false, 'message' => 'Categoria atualizada com suceso']);
     }
 
     static public function delete (array $params) : Json {
@@ -89,9 +115,9 @@ class CategoryProductsController {
         $category->id = $params['id'];
         $delete = $repository->delete($category);
 
-        if ($delete) return new Json(['error' => false, 'message' => 'Categoria deletado com suceso']);
+        if ($delete) return new Json(['error' => false, 'message' => 'Categoria deletada com suceso']);
 
-        return new Json(['error' => true, 'message' => 'Não foi possível deletar o categoria']);
+        return new Json(['error' => true, 'message' => 'Não foi possível deletar a categoria']);
     }
 
 }
