@@ -1,6 +1,9 @@
 <?php
 require_once "vendor/autoload.php";
 
+setlocale(LC_ALL, 'pt_BR.utf8');
+date_default_timezone_set('America/Sao_Paulo');
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 

@@ -40,8 +40,8 @@ class ProductRepository implements IProductRepository{
 
     public function save(Product $product) : bool {
         $conn = $this->connection->getConnection();
-        $query = "INSERT INTO {$this->table} (category_id, name, description, price) VALUES 
-                    (:category_id, :name, :description, :price)";
+        $query = "INSERT INTO {$this->table} (category_id, name, description, price, created_at) VALUES
+                    (:category_id, :name, :description, :price, GETDATE())";
         $statement = $conn->prepare($query);
         $statement->execute([
             'category_id' => $product->category_id,
@@ -58,7 +58,8 @@ class ProductRepository implements IProductRepository{
                     category_id = :category_id,
                     name = :name,
                     description = :description,
-                    price = :price
+                    price = :price,
+                    updated_at = GETDATE()
                     WHERE
                         id = :id";
         $statement = $conn->prepare($query);

@@ -9,12 +9,13 @@
   - ```console
        composer install
        composer up-tables
+       php -S localhost:8080 index.php
        ```
 
 ## Requirements Implementations
 
 - [x] - Cadastro dos produtos
-- [] - Cadastro dos tipos de cada produto
+- [x] - Cadastro dos tipos de cada produto
 - [] - Cadastro dos valores percentuais de impostos dos tipos de produtos
 - [] - A tela de venda, onde serão informados os produtos e quantidade adquirias
 - [] - O Sistema deve apresentar o valor de cada item multiplicado pela quantidade adquirida e a quantidade
