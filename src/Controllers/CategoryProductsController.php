@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Domain\CategoryProducts;
+use App\Domain\CategoryProductsTaxes;
 use App\Repository\CategoryProductsRepository;
 use App\Services\RequestFactory as Request;
 use App\Services\Json;
@@ -14,7 +15,7 @@ class CategoryProductsController {
         $category = $repository->get($id);
 
         if (is_null($category))
-            return new Json(['message' => 'Nenhum produto encontrado','error' => true]);
+            return new Json(['message' => 'Nenhuma categoria encontrada','error' => true]);
 
         return $category->toJson();
     }
@@ -39,9 +40,17 @@ class CategoryProductsController {
         $repository = new CategoryProductsRepository;
         $save = $repository->save($category);
 
-        if ($save) return new Json(['error' => false, 'message' => 'Produto salvo com suceso']);
+        if (!$save) return new Json(['error' => true, 'message' => 'Não foi possível salvar a categoria']);
 
-        return new Json(['error' => true, 'message' => 'Não foi possível salvar o produto']);
+        $category_taxes = new CategoryProductsRepository;
+        $errors = $category_taxes->rules($request);
+        if (count($errors) > 0) {
+            return new Json($errors);
+        }
+
+        
+        
+        return new Json(['error' => false, 'message' => 'Categoria salva com suceso']);
     }
 
     static public function update (array $params) : Json {
@@ -60,9 +69,9 @@ class CategoryProductsController {
         $repository = new CategoryProductsRepository;
         $update = $repository->update($category);
 
-        if ($update) return new Json(['error' => false, 'message' => 'Produto atualizado com suceso']);
+        if ($update) return new Json(['error' => false, 'message' => 'Categoria atualizada com suceso']);
 
-        return new Json(['error' => true, 'message' => 'Não foi possível atualizar o produto']);
+        return new Json(['error' => true, 'message' => 'Não foi possível atualizar a categoria']);
     }
 
     static public function delete (array $params) : Json {
@@ -71,9 +80,9 @@ class CategoryProductsController {
         $category->id = $params['id'];
         $delete = $repository->delete($category);
 
-        if ($delete) return new Json(['error' => false, 'message' => 'Produto deletado com suceso']);
+        if ($delete) return new Json(['error' => false, 'message' => 'Categoria deletado com suceso']);
 
-        return new Json(['error' => true, 'message' => 'Não foi possível deletar o produto']);
+        return new Json(['error' => true, 'message' => 'Não foi possível deletar o categoria']);
     }
 
 }

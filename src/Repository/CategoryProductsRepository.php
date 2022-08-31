@@ -1,16 +1,18 @@
 <?php
 namespace App\Repository;
 
-use App\Repository\Contracts\ICategoryProducts;
+use App\Repository\Contracts\ICategoryProductsRepository;
 use App\Domain\CategoryProducts;
+use App\Domain\CategoryProductsTaxes;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use InfraDataBase\Connection;
 use \PDO;
 
-class CategoryProductsRepository implements ICategoryProducts {
+class CategoryProductsRepository implements ICategoryProductsRepository {
     private Connection $conn;
     private $table = "category_product";
+    private $tableRelationTaxe = "category_product_taxes";
 
     public function __construct () {
         $this->connection = new Connection;
@@ -72,5 +74,19 @@ class CategoryProductsRepository implements ICategoryProducts {
         $query = "DELETE FROM {$this->table} WHERE id = $category->id";
         $conn->query($query);
         return $conn->errorCode() !== '';
+    }
+
+    public function saveTaxe(CategoryProductsTaxes $category_taxes) : bool {
+        $conn = $this->connection->getConnection();
+        $query = "INSERT INTO {$this->tableRelationTaxe} (category_product_id, taxe_id, percentual) 
+                    VALUES (:category_product_id, :taxe_id, :percentual)";
+        
+        $statement = $conn->prepare($query);
+        $statement->execute([
+            'category_product_id' => $category_taxes->category_id,
+            'taxe_id' => $category_taxes->taxe_id,
+            'percentual' => $category_taxes->percentual,
+        ]);
+        return $statement->errorCode() !== '';
     }
 }

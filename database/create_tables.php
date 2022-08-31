@@ -23,7 +23,7 @@ $tableTaxes->setColumn('name', 'varchar(50) not null');
 $tableTaxes->up();
 
 // table  type product - taxes
-$tableTaxesTypeProduct = new Table('category_product_taxes', $conn);
+$tableTaxesTypeProduct = new Table('category_product_taxes', $conn, false);
 $tableTaxesTypeProduct->setForeignKey('category_product_id', 'int not null', 'category_product', 'id');
 $tableTaxesTypeProduct->setForeignKey('taxe_id', 'int not null', 'taxes', 'id');
 $tableTaxesTypeProduct->setColumn('percentual', 'float not null');
