@@ -39,6 +39,30 @@ try {
     $tableProduct->setColumn('price', 'money not null');
     $tableProduct->up();
 
+    //table client
+    $tableClient = new Table('client', $conn);
+    $tableClient->setPrimaryKey('id', 'int identity(1,1)');
+    $tableClient->setColumn('name', 'varchar(255) not null');
+    $tableClient->setColumn('email', 'varchar(255) not null');
+    $tableSales->up();
+
+
+    //table seller
+    $tableSeller = new Table('seller', $conn);
+    $tableSeller->setPrimaryKey('id', 'int identity(1,1)');
+    $tableSeller->setColumn('name', 'varchar(255) not null');
+    $tableSeller->setColumn('email', 'varchar(255) not null');
+    $tableSales->up();
+
+    // table sales
+    $tableSales = new Table('product', $conn);
+    $tableSales->setPrimaryKey('id', 'int identity(1,1)');
+    $tableSales->setColumn('seller', 'varchar(50) not null');
+    $tableSales->setColumn('client', 'varchar(255) not null');
+    $tableSales->setColumn('total_quantity_products', 'int not null');
+    $tableSales->setColumn('total_price', 'money not null');
+    $tableSales->up();
+
 }catch (\Exception $e) {
     echo "Error: " . $e->getMessage() . PHP_EOL;
 }
