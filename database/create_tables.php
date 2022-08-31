@@ -35,5 +35,5 @@ $tableProduct->setPrimaryKey('id', 'int identity(1,1)');
 $tableProduct->setForeignKey('category_id', 'int not null', 'category_product', 'id');
 $tableProduct->setColumn('name', 'varchar(50) not null');
 $tableProduct->setColumn('description', 'varchar(255) not null');
-$tableProduct->setColumn('price', 'float not null');
+$tableProduct->setColumn('price', 'money not null');
 $tableProduct->up();

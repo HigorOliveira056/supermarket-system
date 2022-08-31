@@ -24,6 +24,9 @@ switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
-        echo $handler($vars);
+        header('Content-Type: application/json');
+        $response = $handler($vars);
+        if ($response instanceof App\Services\Json)
+            echo $response;
     break;
 }
