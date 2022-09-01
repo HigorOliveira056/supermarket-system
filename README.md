@@ -176,7 +176,7 @@ POST /category/
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
 | `name` | `string` | **Required** |
-| `description` | `string` | **OPTIONAL** |
+| `description` | `string` | **Optional** |
 | `taxes_id` | `string` | **Required** `taxes id separeted with semicolon` |
 
 ## Response
@@ -200,7 +200,7 @@ PUT /category/id:
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
 | `name` | `string` | **Required** |
-| `description` | `string` | **OPTIONAL** |
+| `description` | `string` | **Optional** |
 | `taxes_id` | `string` | **Required** `taxes id separeted with semicolon` |
 
 ## Response
@@ -301,7 +301,7 @@ POST /product/
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
 | `name` | `string` | **Required** |
-| `description` | `string` | **OPTIONAL** |
+| `description` | `string` | **Optional** |
 | `price` | `float` | **Required** `|
 | `category_id` | `int` | **Required** `|
 
@@ -326,7 +326,7 @@ PUT /product/id:
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
 | `name` | `string` | **Required** |
-| `description` | `string` | **OPTIONAL** |
+| `description` | `string` | **Optional** |
 | `price` | `float` | **Required** `|
 | `category_id` | `int` | **Required** `|
 
