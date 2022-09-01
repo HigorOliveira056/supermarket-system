@@ -4,7 +4,7 @@ namespace App\Repository;
 use App\Repository\Contracts\IProductRepository;
 use App\Domain\Product;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Helpers\GenericCollection;
 use InfraDataBase\Connection;
 use \PDO;
 
@@ -21,21 +21,23 @@ class ProductRepository implements IProductRepository{
         $query = "SELECT * FROM {$this->table} WHERE id = :id";
         $statement = $conn->prepare($query);
         $statement->execute(['id' => $idProduct]);
-        $product = $statement->fetchAll(PDO::FETCH_CLASS, Product::class);
-        return count($product) < 1 ? null : $product[0];
+        $product = $statement->fetchAll(PDO::FETCH_CLASS, Product::class)[0];
+        if ($statement->rowCount() < 1) return null;
+        $product->category = (new CategoryProductsRepository)->get($product->category_id);
+        return $product;
     }
 
     public function getAll() : Collection {
         $conn = $this->connection->getConnection();
         $query = "SELECT * FROM {$this->table}";
         $statement = $conn->query($query);
-        $products = $statement->fetchAll();
-        foreach ($products as $key => $item) {
-            $products[$key] = array_filter($products[$key], function ($key) {
-                return !is_numeric($key);
-            },ARRAY_FILTER_USE_KEY);
+        $products = $statement->fetchAll(PDO::FETCH_CLASS, Product::class);
+        $category_repository = new CategoryProductsRepository;
+        foreach ($products as $prod) {
+            $prod->category = $category_repository->get($prod->category_id);
         }
-        return $statement->rowCount() < 1 ? new ArrayCollection([]) : new ArrayCollection($products);
+        
+        return $statement->rowCount() < 1 ? new GenericCollection(Product::class, []) : new GenericCollection(Product::class, $products);
     }
 
     public function save(Product $product) : bool {
@@ -43,12 +45,19 @@ class ProductRepository implements IProductRepository{
         $query = "INSERT INTO {$this->table} (category_id, name, description, price, created_at) VALUES
                     (:category_id, :name, :description, :price, GETDATE())";
         $statement = $conn->prepare($query);
-        $statement->execute([
-            'category_id' => $product->category_id,
-            'name' => $product->name,
-            'description' => $product->description,
-            'price' => $product->price,
-        ]);
+        $conn->beginTransaction();
+        try {
+            $category_id = isset($product->category_id) ? $product->category_id : $product->category->id;
+            $statement->execute([
+                'category_id' => $category_id,
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price,
+            ]);
+            $conn->commit();
+        }catch (\PDOException $e) {
+            $conn->rollback();
+        }
         return $statement->errorCode() !== '';
     }
 
@@ -63,20 +72,32 @@ class ProductRepository implements IProductRepository{
                     WHERE
                         id = :id";
         $statement = $conn->prepare($query);
-        $statement->execute([
-            'id' => $product->id,
-            'category_id' => $product->category_id,
-            'name' => $product->name,
-            'description' => $product->description,
-            'price' => $product->price,
-        ]);
+        $conn->beginTransaction();
+        try {
+            $statement->execute([
+                'id' => $product->id,
+                'category_id' => isset($product->category_id) ? $product->category_id : $product->category->id,
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price,
+            ]);
+            $conn->commit();
+        }catch(\PDOException $e) {
+            $conn->rollback();
+        }
         return $statement->errorCode() !== '';
     }
 
     public function delete(Product $product) : bool {
         $conn = $this->connection->getConnection();
         $query = "DELETE FROM {$this->table} WHERE id = $product->id";
-        $conn->query($query);
+        $conn->beginTransaction();
+        try {
+            $conn->query($query);
+            $conn->commit();
+        }catch(\PDOException $e) {
+            $conn->rollback();
+        }
         return $conn->errorCode() !== '';
     }
 }

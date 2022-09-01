@@ -12,29 +12,42 @@ use App\Domain\SalesProduct;
 use App\Domain\Client;
 use App\Domain\Seller;
 use App\Repository\CategoryProductsRepository;
+use App\Repository\TaxesRepository;
+use App\Repository\ProductRepository;
 
-$category = new CategoryProducts;
+
 $taxes = new Taxes;
-
-$category->id = 1;
-$category->description = 'celulares';
-$category->name = 'tecnologia';
-
 $taxes->id = 1;
 $taxes->name = 'ICMS';
 $taxes->percentual = 18;
+
+// $respositoryTaxes = new TaxesRepository;
+// $respositoryTaxes->save($taxes);
+
+$category = new CategoryProducts;
+$category->id = 2;
+$category->description = 'computadores';
+$category->name = 'tecnologia';
 $category->addTax($taxes);
 
-$respository = new CategoryProductsRepository;
-$respository->save($category);
 
-// $product = new Product;
+// $respository = new CategoryProductsRepository;
+// $respository->save($category);
 
-// $product->id = 1;
-// $product->name = 'celular';
-// $product->description = 'Samsung A2';
-// $product->price = 1200.00;
-// $product->category = $category;
+$product = new Product;
+$product->id = 1;
+$product->name = 'celular';
+$product->description = 'Samsung A2';
+$product->price = 1200.00;
+$product->category = $category;
+
+$repository_product = new ProductRepository;
+// $repository_product->delete($product);
+// $repository_product->update($product);
+// $repository_product->save($product);
+foreach ($repository_product->getAll() as $prod) {
+    echo $prod->toJson();
+}
 
 
 // $client = new Client;

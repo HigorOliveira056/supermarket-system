@@ -42,10 +42,16 @@ class TaxesRepository implements ITaxesRepository {
         $query = "INSERT INTO {$this->table} (name, percentual, created_at) VALUES
                     (:name, :percentual, GETDATE())";
         $statement = $conn->prepare($query);
-        $statement->execute([
-            'name' => $taxe->name,
-            'percentual' => $taxe->percentual,
-        ]);
+        $conn->beginTransaction();
+        try {
+            $statement->execute([
+                'name' => $taxe->name,
+                'percentual' => $taxe->percentual,
+            ]);
+            $conn->commit();
+        }catch (\PDOException $e) {
+            $conn->rollback();
+        }
         return $statement->errorCode() !== '';
     }
 
@@ -58,18 +64,30 @@ class TaxesRepository implements ITaxesRepository {
                     WHERE
                         id = :id";
         $statement = $conn->prepare($query);
-        $statement->execute([
-            'id' => $taxe->id,
-            'name' => $taxe->name,
-            'percentual' => $taxe->percentual,
-        ]);
+        $conn->beginTransaction();
+        try {
+            $statement->execute([
+                'id' => $taxe->id,
+                'name' => $taxe->name,
+                'percentual' => $taxe->percentual,
+            ]);
+            $conn->commit();
+        }catch(\PDOException $e) {
+            $conn->rollback();
+        }
         return $statement->errorCode() !== '';
     }
 
     public function delete(Taxes $taxe) : bool {
         $conn = $this->connection->getConnection();
         $query = "DELETE FROM {$this->table} WHERE id = $taxe->id";
-        $conn->query($query);
+        $conn->beginTransaction();
+        try {
+            $conn->query($query);
+            $conn->commit();
+        }catch(\PDOException $e) {
+            $conn->rollback();
+        }
         return $conn->errorCode() !== '';
     }
 }
