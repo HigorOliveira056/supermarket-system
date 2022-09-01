@@ -231,6 +231,133 @@ DELETE /taxes/id:
 
 ------------------------------
 
+**/product**
+-------------
+
+```http
+GET /product/
+```
+
+## Response
+```javascript
+{
+  {
+    id: int,
+    category_id: int,
+    name: string,
+    description: string,
+    price: float,
+    category: {
+      id: int,
+      name: string,
+      description: string
+      taxes: [{
+        id: int,
+        name: string,
+        description: string
+      }]
+    }
+  }
+}
+```
+
+------------------------------
+
+```http
+GET /product/id:
+```
+
+| Route Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` |  |
+
+## Response
+```javascript
+{
+  id: int,
+  category_id: int,
+  name: string,
+  description: string,
+  price: float,
+  category: {
+    id: int,
+    name: string,
+    description: string
+    taxes: [{
+      id: int,
+      name: string,
+      description: string
+    }]
+  }
+}
+```
+
+------------------------------
+
+```http
+POST /product/
+```
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | **Required** |
+| `description` | `string` | **OPTIONAL** |
+| `price` | `float` | **Required** `|
+| `category_id` | `int` | **Required** `|
+
+## Response
+```javascript
+{
+  error: bool,
+  message: string
+}
+```
+
+------------------------------
+
+```http
+PUT /product/id:
+```
+
+| Route Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` | **Required** |
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | **Required** |
+| `description` | `string` | **OPTIONAL** |
+| `price` | `float` | **Required** `|
+| `category_id` | `int` | **Required** `|
+
+## Response
+```javascript
+{
+  error: bool,
+  message: string
+}
+```
+
+------------------------------
+
+```http
+DELETE /product/id:
+```
+
+| Route Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` | **Required** |
+
+## Response
+```javascript
+{
+  error: bool,
+  message: string
+}
+```
+
+------------------------------
+
 ## Requirements Implementations
 
 - [x] - Cadastro dos produtos
