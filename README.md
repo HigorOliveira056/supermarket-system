@@ -1,7 +1,7 @@
 ### Requirements Technic
 - Aplicação foi feita utilizando-se PHP: ^7.4
 - Banco de dados sql server
-- Necessários os drives para a conexeção com o sql server
+- Necessário os drivers para a conexão com o sql server
 
 ## RUN THE PROJECT - API
 - Configure .env com a configuração para se conectar no banco de dados
@@ -11,6 +11,15 @@
        composer up-tables
        php -S localhost:8080 index.php
        ```
+Description Project
+-------------------
+
+**A aplicação tem o intuito de fornecer uma API no padrão REST que retorna uma resposta no formato JSON**
+
+***Até o momento foi possível implementar os métodos de crud para as taxas(impostos), categorias e produtos e as regras para os
+cálculos relacionados a venda***
+
+
 
 ## Requirements Implementations
 

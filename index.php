@@ -1,10 +1,12 @@
 <?php
 require_once "vendor/autoload.php";
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: *');
+header('Content-Type: application/json');
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
-
-
 
 setlocale(LC_ALL, 'pt_BR.utf8');
 date_default_timezone_set('America/Sao_Paulo');
@@ -32,8 +34,8 @@ switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
-        header('Content-Type: application/json');
         $response = $handler($vars);
+        http_response_code(200);
         if ($response instanceof App\Helpers\Json)
             echo $response;
     break;
