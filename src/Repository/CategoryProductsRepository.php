@@ -5,7 +5,7 @@ use App\Repository\Contracts\ICategoryProductsRepository;
 use App\Domain\CategoryProducts;
 use App\Domain\Taxes;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Helpers\GenericCollection;
 use InfraDataBase\Connection;
 use \PDO;
 
@@ -24,20 +24,28 @@ class CategoryProductsRepository implements ICategoryProductsRepository {
         $statement = $conn->prepare($query);
         $statement->execute(['id' => $idCategory]);
         $category = $statement->fetchAll(PDO::FETCH_CLASS, CategoryProducts::class);
-        return count($category) < 1 ? null : $category[0];
+        if ($statement->rowCount() < 1) return null;
+        $taxes = $this->getRelationTaxes($category[0]);
+        foreach ($taxes as $tax) {
+            $category[0]->addTax($tax);
+        }
+        return $category[0];
     }
 
     public function getAll() : Collection {
         $conn = $this->connection->getConnection();
         $query = "SELECT * FROM {$this->table}";
         $statement = $conn->query($query);
-        $categorys = $statement->fetchAll();
-        foreach ($categorys as $key => $item) {
-            $categorys[$key] = array_filter($categorys[$key], function ($key) {
-                return !is_numeric($key);
-            },ARRAY_FILTER_USE_KEY);
+        $categorys = $statement->fetchAll(PDO::FETCH_CLASS, CategoryProducts::class);
+
+        foreach ($categorys as $categ) {
+            foreach ($this->getRelationTaxes($categ) as $tax) {
+                $categ->addTax($tax);
+            }
         }
-        return $statement->rowCount() < 1 ? new ArrayCollection([]) : new ArrayCollection($categorys);
+
+        return $statement->rowCount() < 1 ? 
+                new GenericCollection(CategoryProducts::class, []) : new GenericCollection(CategoryProducts::class, $categorys);
     }
 
     public function save(CategoryProducts $category) : bool {
@@ -70,6 +78,10 @@ class CategoryProductsRepository implements ICategoryProductsRepository {
             'name' => $category->name,
             'description' => $category->description,
         ]);
+        $this->deleteRelationTaxes($category);
+        foreach ($category->getTaxes()->toArray() as $tax) {
+            $this->saveRelationTax($category, $tax);
+        }
         return $statement->errorCode() !== '';
     }
 
@@ -88,7 +100,7 @@ class CategoryProductsRepository implements ICategoryProductsRepository {
                     WHERE r.category_product_id = {$category->id}";
         $statement = $conn->query($query);
         $taxe = $statement->fetchAll(PDO::FETCH_CLASS, Taxes::class);  
-        return $statement->rowCount() < 1 ? new ArrayCollection([]) : new ArrayCollection($taxe);
+        return $statement->rowCount() < 1 ? new GenericCollection(Taxes::class, []) : new GenericCollection(Taxes::class, $taxe);
     }
 
     public function deleteRelationTaxes (CategoryProducts $category) : bool {
