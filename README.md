@@ -31,10 +31,51 @@ GET /taxes/
 
 ```javascript
 {
-  ...taxes
+  {
+    id: int,
+    name: string,
+    description: string
+  }
 }
 ```
 
+------------------------------
+
+```http
+GET /taxes/id:
+```
+
+| Query Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` |  |
+
+```javascript
+{
+  id: int,
+  name: string,
+  description: string
+}
+```
+
+------------------------------
+
+```http
+POST /taxes/
+```
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | **Required** |
+| `percentual` | `float` | **Required** |
+
+```javascript
+{
+  error: bool,
+  message: string
+}
+```
+
+------------------------------
 
 ## Requirements Implementations
 
