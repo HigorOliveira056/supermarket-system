@@ -28,7 +28,7 @@ ENDPOINTS
 ```http
 GET /taxes/
 ```
-
+## Response
 ```javascript
 {
   {
@@ -45,10 +45,11 @@ GET /taxes/
 GET /taxes/id:
 ```
 
-| Query Parameter | Type | Description |
+| Route Parameter | Type | Description |
 | :--- | :--- | :--- |
 | `id` | `int` |  |
 
+## Response
 ```javascript
 {
   id: int,
@@ -68,6 +69,159 @@ POST /taxes/
 | `name` | `string` | **Required** |
 | `percentual` | `float` | **Required** |
 
+## Response
+```javascript
+{
+  error: bool,
+  message: string
+}
+```
+
+------------------------------
+
+```http
+PUT /taxes/id:
+```
+
+| Route Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` | **Required** |
+
+## Response
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | **Required** |
+| `percentual` | `float` | **Required** |
+
+```javascript
+{
+  error: bool,
+  message: string
+}
+```
+
+------------------------------
+
+```http
+DELETE /taxes/id:
+```
+
+| Route Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` | **Required** |
+
+## Response
+```javascript
+{
+  error: bool,
+  message: string
+}
+```
+
+------------------------------
+
+**/category**
+-------------
+
+```http
+GET /category/
+```
+
+## Response
+```javascript
+{
+  {
+    id: int,
+    name: string,
+    description: string
+    taxes: [{
+      id: int,
+      name: string,
+      description: string
+    }]
+  }
+}
+```
+
+------------------------------
+
+```http
+GET /category/id:
+```
+
+| Route Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` |  |
+
+## Response
+```javascript
+{
+  id: int,
+  name: string,
+  description: string
+  taxes: [{
+    id: int,
+    name: string,
+    description: string
+  }]
+}
+```
+
+------------------------------
+
+```http
+POST /category/
+```
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | **Required** |
+| `description` | `string` | **OPTIONAL** |
+| `taxes_id` | `string` | **Required** `taxes id separeted with semicolon` |
+
+## Response
+```javascript
+{
+  error: bool,
+  message: string
+}
+```
+
+------------------------------
+
+```http
+PUT /category/id:
+```
+
+| Route Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` | **Required** |
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `name` | `string` | **Required** |
+| `description` | `string` | **OPTIONAL** |
+| `taxes_id` | `string` | **Required** `taxes id separeted with semicolon` |
+
+## Response
+```javascript
+{
+  error: bool,
+  message: string
+}
+```
+
+------------------------------
+
+```http
+DELETE /taxes/id:
+```
+
+| Route Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `int` | **Required** |
+
+## Response
 ```javascript
 {
   error: bool,
