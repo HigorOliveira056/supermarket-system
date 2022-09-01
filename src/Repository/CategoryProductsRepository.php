@@ -66,6 +66,7 @@ class CategoryProductsRepository implements ICategoryProductsRepository {
             $conn->commit();
         }catch (\PDOException $e) {
             $conn->rollback();
+            return false;
         }
         return $statement->errorCode() !== '';
     }
@@ -93,20 +94,22 @@ class CategoryProductsRepository implements ICategoryProductsRepository {
             $conn->commit();
         }catch (\PDOException $e) {
             $conn->rollback();
+            return false;
         }
         return $statement->errorCode() !== '';
     }
 
     public function delete(CategoryProducts $category) : bool {
-        $this->deleteRelationTaxes($category);
         $conn = $this->connection->getConnection();
         $query = "DELETE FROM {$this->table} WHERE id = $category->id";
         $conn->beginTransaction();
         try {
+            $this->deleteRelationTaxes($category);
             $conn->query($query);
             $conn->commit();
         }catch (\PDOException $e) {
             $conn->rollback();
+            return false;
         }
         return $conn->errorCode() !== '';
     }

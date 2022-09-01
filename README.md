@@ -1,5 +1,5 @@
 ### Requirements Technic
-- Applicação foi feita utilizando-se PHP: ^7.4
+- Aplicação foi feita utilizando-se PHP: ^7.4
 - Banco de dados sql server
 - Necessários os drives para a conexeção com o sql server
 

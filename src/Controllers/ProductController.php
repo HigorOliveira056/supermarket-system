@@ -8,7 +8,7 @@ use App\Helpers\RequestFactory as Request;
 use App\Helpers\Json;
 
 
-class ProductController {
+class ProductController extends BaseController {
     static public function show (array $params) : Json {
         $id = (int) $params['id'];
         $repository = new ProductRepository;
@@ -17,38 +17,29 @@ class ProductController {
         if (is_null($product))
             return new Json(['message' => 'Nenhum produto encontrado','error' => true]);
 
-        $repositoryCategory = new CategoryProductsRepository;
-        $category = $repositoryCategory->get($product->category_id);
-
-        $taxesCollection = $repositoryCategory->oneToMany($category);
-        $taxes = [];
-        foreach ($taxesCollection->toArray() as $item) {
-            $taxes[] = (string) $item->toJson();
-        }
-
-        $response = [
-            'product' => (string) $product->toJson(),
-            'category' => (string) $category->toJson(),
-            'taxes' => $taxes
-        ];
-
-        return new Json($response);
+        return $product->toJson();
     }
 
     static public function showAll () : Json {
        $repository = new ProductRepository;
        $collection = $repository->getAll();
-       return new Json($collection->toArray());
+       $response = [];
+       foreach ($collection as $product) {
+           $response[] = (string) $product->toJson();
+       }
+       return new Json($response);
     }
 
     static public function save () : Json {
         $request = new Request;
         $product = new Product;
-        $errors = $product->rules($request);
+        $rules = $product->rules();
+        $errors = self::validate($rules, $request);
         if (count($errors) > 0) {
             return new Json($errors);
         }
-        $product->category_id = $request->get('category_id');
+
+        $product->category_id = (int) $request->get('category_id');
         $product->name = $request->get('name');
         $product->description = $request->get('description');
         $product->price = $request->get('price');
@@ -56,16 +47,16 @@ class ProductController {
         $repository = new ProductRepository;
         $save = $repository->save($product);
 
-        if ($save) return new Json(['error' => false, 'message' => 'Produto salvo com suceso']);
-
-        return new Json(['error' => true, 'message' => 'Não foi possível salvar o produto']);
+        if (!$save) return new Json(['error' => true, 'message' => 'Não foi possível salvar o produto']);
+        
+        return new Json(['error' => false, 'message' => 'Produto salvo com suceso']);
     }
 
     static public function update (array $params) : Json {
-        $repository = new ProductRepository;
         $request = new Request;
         $product = new Product;
-        $errors = $product->rules($request);
+        $rules = $product->rules();
+        $errors = self::validate($rules, $request);
         if (count($errors) > 0) {
             return new Json($errors);
         }
@@ -79,9 +70,9 @@ class ProductController {
         $repository = new ProductRepository;
         $update = $repository->update($product);
 
-        if ($update) return new Json(['error' => false, 'message' => 'Produto atualizado com suceso']);
-
-        return new Json(['error' => true, 'message' => 'Não foi possível atualizar o produto']);
+        if (!$update) return new Json(['error' => true, 'message' => 'Não foi possível atualizar o produto']);
+        
+        return new Json(['error' => false, 'message' => 'Produto atualizado com suceso']);
     }
 
     static public function delete (array $params) : Json {

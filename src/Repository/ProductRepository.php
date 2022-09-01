@@ -21,10 +21,10 @@ class ProductRepository implements IProductRepository{
         $query = "SELECT * FROM {$this->table} WHERE id = :id";
         $statement = $conn->prepare($query);
         $statement->execute(['id' => $idProduct]);
-        $product = $statement->fetchAll(PDO::FETCH_CLASS, Product::class)[0];
+        $product = $statement->fetchAll(PDO::FETCH_CLASS, Product::class);
         if ($statement->rowCount() < 1) return null;
-        $product->category = (new CategoryProductsRepository)->get($product->category_id);
-        return $product;
+        $product[0]->category = (new CategoryProductsRepository)->get($product[0]->category_id);
+        return $product[0];
     }
 
     public function getAll() : Collection {
@@ -47,7 +47,7 @@ class ProductRepository implements IProductRepository{
         $statement = $conn->prepare($query);
         $conn->beginTransaction();
         try {
-            $category_id = isset($product->category_id) ? $product->category_id : $product->category->id;
+            $category_id = isset($product->category) ? $product->category->id : $product->category_id;
             $statement->execute([
                 'category_id' => $category_id,
                 'name' => $product->name,
@@ -57,6 +57,7 @@ class ProductRepository implements IProductRepository{
             $conn->commit();
         }catch (\PDOException $e) {
             $conn->rollback();
+            return false;
         }
         return $statement->errorCode() !== '';
     }
@@ -76,7 +77,7 @@ class ProductRepository implements IProductRepository{
         try {
             $statement->execute([
                 'id' => $product->id,
-                'category_id' => isset($product->category_id) ? $product->category_id : $product->category->id,
+                'category_id' => isset($product->category) ? $product->category->id : $product->category_id,
                 'name' => $product->name,
                 'description' => $product->description,
                 'price' => $product->price,
@@ -84,6 +85,7 @@ class ProductRepository implements IProductRepository{
             $conn->commit();
         }catch(\PDOException $e) {
             $conn->rollback();
+            return false;
         }
         return $statement->errorCode() !== '';
     }
@@ -97,6 +99,7 @@ class ProductRepository implements IProductRepository{
             $conn->commit();
         }catch(\PDOException $e) {
             $conn->rollback();
+            return false;
         }
         return $conn->errorCode() !== '';
     }
