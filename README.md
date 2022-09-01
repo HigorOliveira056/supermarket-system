@@ -19,6 +19,21 @@ Description Project
 ***Até o momento foi possível implementar os métodos de crud para as taxas(impostos), categorias e produtos e as regras para os
 cálculos relacionados a venda***
 
+ENDPOINTS
+=========
+
+**/taxes**
+----------
+
+```http
+GET /taxes/
+```
+
+```javascript
+{
+  ...taxes
+}
+```
 
 
 ## Requirements Implementations
