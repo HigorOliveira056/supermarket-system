@@ -44,7 +44,7 @@ try {
     $tableClient->setPrimaryKey('id', 'int identity(1,1)');
     $tableClient->setColumn('name', 'varchar(255) not null');
     $tableClient->setColumn('email', 'varchar(255) not null');
-    $tableSales->up();
+    $tableClient->up();
 
 
     //table seller
@@ -52,16 +52,22 @@ try {
     $tableSeller->setPrimaryKey('id', 'int identity(1,1)');
     $tableSeller->setColumn('name', 'varchar(255) not null');
     $tableSeller->setColumn('email', 'varchar(255) not null');
-    $tableSales->up();
+    $tableSeller->up();
 
     // table sales
-    $tableSales = new Table('product', $conn);
+    $tableSales = new Table('sales', $conn);
     $tableSales->setPrimaryKey('id', 'int identity(1,1)');
-    $tableSales->setColumn('seller', 'varchar(50) not null');
-    $tableSales->setColumn('client', 'varchar(255) not null');
+    $tableSales->setForeignKey('seller_id', 'int not null', 'seller', 'id');
+    $tableSales->setForeignKey('client_id', 'int not null', 'client', 'id');
     $tableSales->setColumn('total_quantity_products', 'int not null');
     $tableSales->setColumn('total_price', 'money not null');
     $tableSales->up();
+
+    $tablesSalesProduct = new Table('sales_products', $conn);
+    $tablesSalesProduct->setForeignKey('sales_id', 'int not null', 'sales', 'id');
+    $tablesSalesProduct->setForeignKey('product_id', 'int not null', 'product', 'id');
+    $tablesSalesProduct->setColumn('quantity', 'int not null');
+    $tablesSalesProduct->up();
 
 }catch (\Exception $e) {
     echo "Error: " . $e->getMessage() . PHP_EOL;

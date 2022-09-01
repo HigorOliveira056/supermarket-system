@@ -11,5 +11,4 @@ interface ICategoryProductsRepository {
     public function save(CategoryProducts $category) : bool;
     public function update(CategoryProducts $category) : bool;
     public function delete(CategoryProducts $category) : bool;
-    public function saveTaxe(CategoryProductsTaxes $category_taxes) : bool;
 }

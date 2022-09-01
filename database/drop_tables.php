@@ -10,6 +10,18 @@ use InfraDataBase\Table;
 $conn = new Connection;
 
 try {
+    $tablesSalesProduct = new Table('sales_products', $conn);
+    $tablesSalesProduct->down();
+
+    $tableSales = new Table('sales', $conn);
+    $tableSales->down();
+    
+    $tableClient = new Table('client', $conn);
+    $tableClient->down();
+    
+    $tableSeller = new Table('seller', $conn);
+    $tableSeller->down();
+
     $tableProduct = new Table('product', $conn);
     $tableProduct->down();
     

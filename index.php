@@ -1,6 +1,63 @@
 <?php
 require_once "vendor/autoload.php";
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+use App\Domain\CategoryProducts;
+use App\Domain\Taxes;
+use App\Domain\Product;
+use App\Domain\Sales;
+use App\Domain\SalesProduct;
+use App\Domain\Client;
+use App\Domain\Seller;
+use App\Repository\CategoryProductsRepository;
+
+$category = new CategoryProducts;
+$taxes = new Taxes;
+
+$category->id = 1;
+$category->description = 'celulares';
+$category->name = 'tecnologia';
+
+$taxes->id = 1;
+$taxes->name = 'ICMS';
+$taxes->percentual = 18;
+$category->addTax($taxes);
+
+$respository = new CategoryProductsRepository;
+$respository->save($category);
+
+// $product = new Product;
+
+// $product->id = 1;
+// $product->name = 'celular';
+// $product->description = 'Samsung A2';
+// $product->price = 1200.00;
+// $product->category = $category;
+
+
+// $client = new Client;
+// $seller = new Seller;
+
+// $sales = new Sales;
+// $sales->id = 2;
+// $sales->seller = $seller;
+// $sales->client = $client;
+// $sales_product = new SalesProduct;
+// $sales_product->insertProduct($sales, $product, 1);
+
+// $sales_product2 = new SalesProduct;
+// $sales_product2->insertProduct($sales, $product, 1);
+
+// $sales->addProduct($sales_product);
+// $sales->addProduct($sales_product2);
+
+// echo $sales->toJson();
+// echo $product->getPrice(), PHP_EOL, $product->getTotalTaxes(), PHP_EOL, $product->percentualTaxes();
+
+die;
+
 setlocale(LC_ALL, 'pt_BR.utf8');
 date_default_timezone_set('America/Sao_Paulo');
 

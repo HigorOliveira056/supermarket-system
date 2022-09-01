@@ -3,9 +3,8 @@ namespace App\Controllers;
 
 use App\Domain\Taxes;
 use App\Repository\TaxesRepository;
-use App\Services\RequestFactory as Request;
-use App\Services\Json;
-
+use App\Helpers\RequestFactory as Request;
+use App\Helpers\Json;
 
 class TaxesController {
     static public function show (array $params) : Json {

@@ -4,8 +4,8 @@ namespace App\Controllers;
 use App\Domain\Product;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryProductsRepository;
-use App\Services\RequestFactory as Request;
-use App\Services\Json;
+use App\Helpers\RequestFactory as Request;
+use App\Helpers\Json;
 
 
 class ProductController {

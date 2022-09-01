@@ -1,8 +1,7 @@
 <?php
 namespace App\Domain;
 
-use App\Services\Json;
-use App\Services\RequestFactory as Request;
+use App\Helpers\Json;
 
 abstract class Entity {
     protected $created_at;
@@ -11,13 +10,15 @@ abstract class Entity {
     public function toJson () : Json {
         return new Json([]);
     }
-    public function rules (Request $request) : array {
+    public function rules () : array {
         return [];
     }
     public function __get ($props) {
         return $this->$props;
     }
     public function __set ($props, $value) {
-        $this->$props = $value;
+        $reflectionProperty = new \ReflectionProperty($this,$props);
+        if (!$reflectionProperty->isPrivate())
+            $this->$props = $value;
     }
 }

@@ -3,8 +3,7 @@ namespace App\Repository;
 
 use App\Repository\Contracts\ITaxesRepository;
 use App\Domain\Taxes;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections;
 use InfraDataBase\Connection;
 use \PDO;
 
@@ -25,7 +24,7 @@ class TaxesRepository implements ITaxesRepository {
         return count($taxe) < 1 ? null : $taxe[0];
     }
 
-    public function getAll() : Collection {
+    public function getAll() : Collections\Collection {
         $conn = $this->connection->getConnection();
         $query = "SELECT * FROM {$this->table}";
         $statement = $conn->query($query);
@@ -35,7 +34,7 @@ class TaxesRepository implements ITaxesRepository {
                 return !is_numeric($key);
             },ARRAY_FILTER_USE_KEY);
         }
-        return $statement->rowCount() < 1 ? new ArrayCollection([]) : new ArrayCollection($taxes);
+        return $statement->rowCount() < 1 ? new Collections\ArrayCollection([]) : new Collections\ArrayCollection($taxes);
     }
 
     public function save(Taxes $taxe) : bool {
