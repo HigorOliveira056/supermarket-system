@@ -5,9 +5,6 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: *');
 header('Content-Type: application/json');
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
 setlocale(LC_ALL, 'pt_BR.utf8');
 date_default_timezone_set('America/Sao_Paulo');
 
